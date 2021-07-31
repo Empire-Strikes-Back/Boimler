@@ -15,4 +15,3 @@ i am mult program - clojure(script) extension for vscode
 - runtime - my runtimes are nodejs, browser
 - compile - i compile one cli command, i use shadow-cljs program, i output .vsix file, my compilation requires nodejs,jvm programs
 - logo - i have no logo, my name, a word - mult - defines me
-- pull requests - i accept no pull requests - i have no public programmers
