@@ -8,7 +8,8 @@ i am mult program - clojure(script) extension for vscode
 - my tabs are like browser pages: it's one tab app, but user can open multiple, just like in the browser
 - i am simple: indent-only code formatting, colors
 - i say no to code linting, static analysis and other crotches: shouldn't be part of programming - writing code it's a creative process
-- releases - my repository has releases - i release .vsix file at mult/releases
+- i say no to store and no to binaries released with my repository: my repository is only source code and i am built from source
+- releases - i say no, commit hashses define me
 - language - my language is clojure
 - runtime - my runtimes are nodejs, browser
 - compile - i compile one cli command, i use shadow-cljs program, i output .vsix file, my compilation requires nodejs,jvm programs
