@@ -12,5 +12,5 @@ i am mult program - clojure(script) extension for vscode
 - i say no to store and no to binaries released with my repository: my repository is only source code and i am built from source
 - releases - i say no, commit hashses define me
 - updates - i say no to updates and update notifications
-- compile - i compile one cli command, i use jpackage program, i require clj, jvm programs
+- compile - i compile one cli command, i use shadow-cljs program, i output .vsix file, my compilation requires nodejs,jvm programs
 - logo - i have no logo, my name, a word - mult - defines me
