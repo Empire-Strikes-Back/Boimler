@@ -17,13 +17,4 @@ main(){
     -M -m mult.main
 }
 
-uberjar(){
-  clj \
-    -X:uberjar genie.core/process \
-    :uberjar-name out/mult.standalone.jar \
-    :main-ns mult.main
-  mkdir -p out/jpackage-input
-  mv out/mult.standalone.jar out/jpackage-input/
-}
-
 "$@"
