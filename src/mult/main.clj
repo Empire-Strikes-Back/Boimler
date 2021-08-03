@@ -6,18 +6,31 @@
                                      timeout to-chan  sliding-buffer dropping-buffer
                                      pipeline pipeline-async]]
    [clojure.string]
-   [clojure.java.io :as io]))
+   [clojure.java.io :as io])
+  (:import
+   (javax.swing JFrame JLabel JButton SwingConstants JMenuBar JMenu JTextArea)
+   (java.awt Canvas Graphics)
+   (java.awt.event WindowListener KeyListener KeyEvent)))
 
 (println "clojure.compiler.direct-linking" (System/getProperty "clojure.compiler.direct-linking"))
 (do (set! *warn-on-reflection* true) (set! *unchecked-math* true))
 
 (defonce stateA (atom nil))
+(defonce ^JFrame jframe nil)
 
 (defn -main [& args]
   (println ::-main)
   (let [data-dir (-> (io/file (System/getProperty "user.dir")) (.getCanonicalPath))]
     (reset! stateA {})
     (add-watch stateA :watch-fn (fn [k stateA old-state new-state] new-state))
+
+    (let [jframe (JFrame. "mult")]
+      (doto jframe
+        (.setDefaultCloseOperation JFrame/EXIT_ON_CLOSE)
+        (.setSize 1600 1200)
+        (.setLocationByPlatform true)
+        (.setVisible true))
+      (alter-var-root #'mult.main/jframe (constantly jframe)))
 
     (go)))
 
