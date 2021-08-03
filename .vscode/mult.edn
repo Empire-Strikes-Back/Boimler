@@ -1,0 +1,31 @@
+{:mult.spec/nrepl-metas
+ #{{:mult.spec/nrepl-id :mult-vscode
+    :mult.spec/include-file?
+    (fn [filepath]
+      (re-matches (re-pattern ".+\\.clj(s|c)") filepath))
+    :mult.spec/host "localhost"
+    :mult.spec/port 8899
+    :mult.spec/nrepl-type :shadow-cljs
+    :mult.spec/runtime :cljs
+    :mult.spec/shadow-build-key :mult-vscode}
+
+   {:mult.spec/nrepl-id :mult-ui-vscode
+    :mult.spec/include-file?
+    (fn [filepath]
+      (re-matches (re-pattern ".+\\.clj(s|c)") filepath))
+    :mult.spec/host "localhost"
+    :mult.spec/port 8899
+    :mult.spec/nrepl-type :shadow-cljs
+    :mult.spec/runtime :cljs
+    :mult.spec/shadow-build-key :mult-ui-vscode}
+
+   {:mult.spec/nrepl-id :shadow-devserver
+    :mult.spec/include-file?
+    (fn [filepath]
+      (re-matches (re-pattern ".+\\.clj(s|c)") filepath))
+    :mult.spec/host "localhost"
+    :mult.spec/port 8899
+    :mult.spec/nrepl-type :shadow-cljs
+    :mult.spec/runtime :clj}}
+
+ :mult.spec/open-n-tabs-on-start 0}
