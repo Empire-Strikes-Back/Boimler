@@ -8,9 +8,4 @@
                                  :tag "v1.0.579-alpha"}
         sci/sci {:git/url "https://github.com//sci"
                  :sha "05f2fe44445d9b21cb0b50d6bac455ca5eea90ec"
-                 :tag "v0.2.4"}}
-
- :aliases
- {:repl
-  {:extra-deps {deps-repl/deps-repl {:git/url "https://github.com/empire-strikes-back/deps-repl"
-                                     :sha "8904c39e136aacafc70c3e066856fc87bcdec127"}}}}}
+                 :tag "v0.2.4"}}}
