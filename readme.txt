@@ -3,7 +3,6 @@ i am mult program - clojure(script) extension for vscode
 - my language is clojure
 - my runtime is jvm
 - i consist of processes and queues - i do asynchrony with core.async library
-- multiple apps, multiple repls: i seamlessly select connections for evaluation as user navigates files in source tree
 - i am config driven: i have no connection sequences, jack-ins, jack-ass - user defines repls in mult.edn file, i lazy-connect when needed
 - a namespace and repls: my tab is clear, shows current namespace and repls user can evalutate in
 - my tabs are like browser pages: it's one tab app, but user can open multiple, just like in the browser
