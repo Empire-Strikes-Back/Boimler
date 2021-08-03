@@ -1,6 +1,0 @@
-target
-.shadow-cljs
-.cpcache
-.vscode
-*.vsix
-# node_modules

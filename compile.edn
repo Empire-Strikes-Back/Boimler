@@ -1,6 +1,0 @@
-{:optimizations :simple
- :output-to "resources/out/mult/main.js"
- :target :nodejs
- :main mult.runtime.main
- :verbose true
- :output-dir "out"}
