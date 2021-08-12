@@ -15,26 +15,11 @@
 (s/def ::cmd|mult ::mult)
 (s/def ::ops| ::channel)
 
-(s/def ::nrepl-connection #(and
-                            (satisfies? mult.protocols/NreplConnection %)
-                            (satisfies? mult.protocols/Release %)
-                            #?(:clj (satisfies? clojure.lang.IDeref %))
-                            #?(:cljs (satisfies? cljs.core/IDeref %))))
-
 
 (s/def ::host string?)
 (s/def ::port int?)
-(s/def ::nrepl-type #{:shadow-cljs :nrepl})
 (s/def ::runtime #{:cljs :clj})
 (s/def ::shadow-build-key keyword?)
-
-(s/def ::nrepl-op #{})
-
-(s/def ::create-nrepl-connection-opts (s/keys :req [::host
-                                                    ::port
-                                                    ::nrepl-type
-                                                    ::runtime]
-                                              :opt [::shadow-build-key]))
 
 (s/def ::session-id string?)
 (s/def ::code-string string?)
@@ -50,23 +35,6 @@
                           (satisfies? mult.protocols/MultProgram %)
                           #?(:clj (satisfies? clojure.lang.IDeref %))
                           #?(:cljs (satisfies? cljs.core/IDeref %))))
-
-(s/def ::nrepl-id keyword?)
-
-(s/def ::include-file? (s/or
-                        ::ifn? ifn?
-                        ::list? list?))
-
-(s/def ::nrepl-meta (s/merge
-                     ::create-nrepl-connection-opts
-                     (s/keys :req [::nrepl-id
-                                   ::include-file?])))
-
-(s/def ::nrepl-metas (s/coll-of ::nrepl-meta :into #{}))
-
-(s/def ::open-n-tabs-on-start int?)
-(s/def ::config (s/keys :req [::nrepl-metas
-                              ::open-n-tabs-on-start]))
 
 (s/def ::mult-cmd #{::cmd-open
                     ::cmd-ping
@@ -94,7 +62,7 @@
                                 ::eval-out
                                 ::ns-symbol
                                 ::config
-                                ::nrepl-id]))
+                                ]))
 
 
 (s/def ::edit #(and

@@ -11,12 +11,10 @@
    #?(:cljs [goog.string :refer [format]])
    [clojure.spec.alpha :as s]
 
-   [sci.core :as sci]
    [cljctools.edit.core :as edit.core]
 
    [mult.spec]
    [mult.protocols]
-   [mult.runtime.nrepl]
    [mult.impl]))
 
 (s/def ::create-opts (s/keys :req [::mult.spec/config
@@ -30,7 +28,6 @@
 
 (s/def ::tabs (s/coll-of ::mult.spec/tab :into #{}))
 
-(s/def ::nrepl-connections (s/map-of ::mult.spec/nrepl-id ::mult.spec/nrepl-connection))
 
 (defn create
   [{:keys [::mult.spec/config
@@ -67,15 +64,6 @@
           (mult.protocols/release* tab)
           (swap! stateA update ::tabs dissoc tab-id))
 
-        nrepl-connections
-        (persistent!
-         (reduce (fn [result {:keys [::mult.spec/nrepl-id] :as nrepl-meta}]
-                   (assoc! result nrepl-id
-                           (mult.runtime.nrepl/create-nrepl-connection
-                            nrepl-meta)))
-                 (transient {})
-                 (get config ::mult.spec/nrepl-metas)))
-
         mult-program
         ^{:type ::mult.spec/mult-program}
         (reify
@@ -97,7 +85,6 @@
                     opts
                     {::opts opts
                      ::mult.spec/editor editor
-                     ::nrepl-connections nrepl-connections
                      ::tabs {}
                      ::mult.spec/ops| ops|
                      ::mult.spec/cmd| cmd|}))
@@ -114,22 +101,7 @@
               (condp = (:op value)
 
                 ::mult.spec/evt-did-change-active-text-editor
-                (let [{:keys []} value
-                      active-text-editor (mult.protocols/active-text-editor* editor)
-                      filepath (mult.protocols/filepath* active-text-editor)]
-                  (when filepath
-                    (let [text (mult.protocols/text* active-text-editor [0 0 100 0])
-                          ns-symbol (edit.core/read-ns-symbol text)
-                          nrepl-ids (mult.impl/filepath-to-nrepl-ids
-                                     config
-                                     filepath)
-                          nrepl-id (first nrepl-ids)]
-                      (when ns-symbol
-                        (doseq [[tab-id tab] (get @stateA ::tabs)]
-                          (when (mult.protocols/visible?* tab)
-                            (mult.impl/send-data tab {:op ::mult.spec/op-update-ui-state
-                                                      ::mult.spec/ns-symbol ns-symbol
-                                                      ::mult.spec/nrepl-id  nrepl-id})))))))
+               (let [])
 
                 (do ::ignore-other-ops))
 
@@ -158,42 +130,7 @@
                 (let [active-text-editor (mult.protocols/active-text-editor* editor)
                       filepath (mult.protocols/filepath* active-text-editor)]
                   (when filepath
-                    (let [text (mult.protocols/text* active-text-editor [0 0 100 0])
-                          ns-symbol (edit.core/read-ns-symbol text)
-                          code-string (mult.protocols/selection* active-text-editor)
-                          nrepl-ids (mult.impl/filepath-to-nrepl-ids
-                                     config
-                                     filepath)
-                          nrepl-id (first nrepl-ids)
-                          nrepl-connection (get-in @stateA [::nrepl-connections nrepl-id])]
-                      (when (and ns-symbol nrepl-connection)
-                        (let [{:keys [::mult.spec/runtime]} @nrepl-connection
-                              #_code-string-formatted
-                              #_(cond
-                                  (= runtime :clj)
-                                  (format "(do (in-ns '%s) %s)" ns-symbol code-string)
-
-                                  (= runtime :cljs)
-                                  (format "(binding [*ns* (find-ns '%s)] %s)" ns-symbol code-string))
-                              {:keys [value err out]} (<! (mult.protocols/eval*
-                                                           nrepl-connection
-                                                           {::mult.spec/code-string code-string
-                                                            ::mult.spec/ns-symbol ns-symbol}))]
-                          (if (zero? (count (get @stateA ::tabs)))
-                            (do
-                              ;; if no tabs, we print eval results directly to console
-                              (println (format "%s => \n\n %s \n\n" ns-symbol code-string))
-                              (when out
-                                (println out))
-                              (when err
-                                (println err))
-                              (println value))
-                            (doseq [[tab-id tab] (get @stateA ::tabs)]
-                              (when (mult.protocols/visible?* tab)
-                                (mult.impl/send-data tab {:op ::mult.spec/op-update-ui-state
-                                                          ::mult.spec/eval-value value
-                                                          ::mult.spec/eval-out out
-                                                          ::mult.spec/eval-err err})))))))))
+                    (let [])))
 
                 (do ::ignore-other-cmds)))
             (recur)))))
