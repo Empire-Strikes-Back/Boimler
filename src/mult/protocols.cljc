@@ -54,3 +54,11 @@
   #_Visible?
   #_Release
   #_IDeref)
+
+(defprotocol NreplConnection
+  (eval* [_ opts])
+  (clone* [_ opts])
+  (connect* [_] [_ opts])
+  (disconnect* [_])
+  #_Release
+  #_IDeref)

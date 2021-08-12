@@ -141,13 +141,20 @@
      eval-outA (r/cursor stateA [::mult.spec/eval-out])
      configA (r/cursor stateA [::mult.spec/config])
      ns-symbolA (r/cursor stateA [::mult.spec/ns-symbol])
-    ]
-    (let [
+     active-nrepl-idA (r/cursor stateA [::mult.spec/nrepl-id])]
+    (let [active-nrepl-id @active-nrepl-idA
           config @configA]
       [:<>
        [:> AntRow]
        [:> AntRow
-        ]
+        [:span
+         (map (fn [{:keys [::mult.spec/nrepl-id] :as nrepl-meta}]
+                (let [active? (= active-nrepl-id  nrepl-id)]
+                  ^{:key nrepl-id}
+                  [:span {:style {:cursor "pointer"
+                                  :margin-right 8
+                                  :color (if active? "black" "grey")}} (str nrepl-id)]))
+              (::mult.spec/nrepl-metas config))]]
        [:> AntRow
         [:div @ns-symbolA]]
 

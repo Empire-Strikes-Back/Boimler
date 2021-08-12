@@ -13,6 +13,17 @@
 
    [clojure.walk]
 
+   [rewrite-clj.zip :as z]
+   [rewrite-clj.parser :as p]
+   [rewrite-clj.node :as n]
+   [rewrite-clj.node.protocols :as node]
+   [rewrite-clj.zip.base :as base]
+   [rewrite-clj.zip.move :as m]
+   [rewrite-clj.custom-zipper.core :as zraw]
+   [rewrite-clj.zip.findz]
+   [rewrite-clj.paredit]
+   [cljfmt.core]
+
    [cljctools.edit.spec :as edit.spec]
    [cljctools.edit.core :as edit.core]
    [cljctools.edit.scan :as edit.scan]
@@ -51,7 +62,7 @@
         (fn [text-document]
           (let [text (. text-document (getText))
                 text-document-stateA
-                (atom {})]
+                (atom {::zloc (z/of-string text {:track-position? true})})]
             (swap! text-documentsA assoc text-document text-document-stateA)))
 
         edit
@@ -137,12 +148,32 @@
                   (time
                    (let [text-document-stateA (get @text-documentsA (. text-editor -document))
                         ;; text (.. text-editor -document (getText))
+                        ;; zloc (z/of-string text {:track-position? true})
+                         zloc (get @text-document-stateA ::zloc)
                          cursor (.. text-editor -selection -active) ; is zero based
                          cursor-position [(inc (. cursor -line)) (inc (. cursor -character))]
                          p? (constantly true)
 
-                        ]
-                     )))
+                         zloc-current
+                         (->> (sequence
+                               (comp
+                                (take-while identity)
+                                (take-while (complement m/end?))
+                                (filter #(and (p? %)
+                                              (rewrite-clj.zip.findz/position-in-range? % cursor-position))))
+                               (iterate zraw/next zloc))
+                              last)]
+                     (when zloc-current
+                       (let [[start end] (z/position-span zloc-current)
+
+                             new-selection (vscode.Selection.
+                                            (vscode.Position. (dec (first end)) (dec (second end)))
+                                            (vscode.Position. (dec (first start)) (dec (second start))))]
+                         (set! (.-selection text-editor) new-selection)))
+                     #_(do
+                         (println cursor-position)
+                         (println (z/string zloc-current))
+                         (println (z/position-span zloc-current))))))
 
                 (do ::ignore-other-ops))
 
@@ -199,6 +230,7 @@
              (not (.-multAlreadyOpened (. text-editor -document))))
     (println ::update-decorations)
     (let [text (.. text-editor -document (getText))
+          zloc (z/of-string text {:track-position? true})
 
           decoration-type-keywords
           (.. vscode -window
@@ -232,19 +264,28 @@
 
           stepA (atom 0)
 
-            ]
-      (doseq []
-        (swap! node-typesA update-in [] (fnil inc 0))
+          zlocs (sequence
+                 (comp
+                  (take-while identity)
+                  (take-while (complement m/end?)))
+                 (iterate m/next zloc))]
+      (doseq [zloc-current zlocs]
+        (swap! node-typesA update-in [(node/node-type (-> zloc-current z/node))] (fnil inc 0))
+        (swap! tagsA update-in [(base/tag zloc-current)] (fnil inc 0))
 
-        (when 
-          (let [[start end] ]
+        #_(println (-> zloc z/node n/keyword-node?))
+        #_(= (base/tag zloc) :keyword)
+        #_(println (z/string zloc))
+
+        (when (= :keyword (node/node-type (-> zloc-current z/node)))
+          (let [[start end] (z/position-span zloc-current)]
             (conj! decoration-options-keywords
                    {:range (vscode.Range.
                             (dec (first start)) (dec (second start))
                             (dec (first end)) (dec (second end)))})))
 
-        (when 
-          (let [[start end] 
+        (when (= :seq (node/node-type (-> zloc-current z/node)))
+          (let [[start end] (z/position-span zloc-current)
                 decoration-options-bracket (get decoration-options-brackets (mod @stepA (count decoration-type-brackets)))]
             (swap! stepA inc)
             (conj! decoration-options-bracket

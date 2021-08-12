@@ -11,6 +11,7 @@
 	],
 	"main": "./resources/out/mult-vscode/main.js",
 	"dependencies": {
+		"nrepl-client": "0.3.0"
 	},
 	"devDependencies": {
 		"antd": "4.9.2",

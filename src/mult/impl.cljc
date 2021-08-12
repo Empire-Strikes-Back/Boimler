@@ -11,6 +11,7 @@
    #?(:cljs [goog.string :refer [format]])
    [clojure.spec.alpha :as s]
 
+   [sci.core :as sci]
    [cljctools.edit.core :as edit.core]
 
    [mult.spec]
@@ -20,3 +21,16 @@
   [tab data]
   {:pre [(s/assert ::mult.spec/mult-ops (:op data))]}
   (mult.protocols/send* tab (pr-str data)))
+
+(defn filepath-to-nrepl-ids
+  [config filepath]
+  (let [opts {:namespaces {'foo.bar {'x 1}}}
+        sci-ctx (sci/init opts)]
+    (into []
+          (comp
+           (filter (fn [{:keys [::mult.spec/nrepl-id
+                                ::mult.spec/include-file?]}]
+                     (let [include-file?-fn (sci/eval-string* sci-ctx (pr-str include-file?))]
+                       (include-file?-fn filepath))))
+           (map ::mult.spec/nrepl-id))
+          (::mult.spec/nrepl-metas config))))
