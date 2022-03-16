@@ -1,7 +1,7 @@
-(ns mult.spec
+(ns Boimler.spec
   (:require
    [clojure.spec.alpha :as s]
-   [mult.protocols]))
+   [Boimler.protocols]))
 
 (s/def ::channel #?(:clj #(instance? clojure.core.async.impl.channels.ManyToManyChannel %)
                     :cljs #(instance? cljs.core.async.impl.channels/ManyToManyChannel %)))
@@ -16,8 +16,8 @@
 (s/def ::ops| ::channel)
 
 (s/def ::nrepl-connection #(and
-                            (satisfies? mult.protocols/NreplConnection %)
-                            (satisfies? mult.protocols/Release %)
+                            (satisfies? Boimler.protocols/NreplConnection %)
+                            (satisfies? Boimler.protocols/Release %)
                             #?(:clj (satisfies? clojure.lang.IDeref %))
                             #?(:cljs (satisfies? cljs.core/IDeref %))))
 
@@ -46,8 +46,8 @@
                             :opt [::session-id]))
 
 
-(s/def ::mult-program #(and
-                          (satisfies? mult.protocols/MultProgram %)
+(s/def ::Boimler-program #(and
+                          (satisfies? Boimler.protocols/BoimlerProgram %)
                           #?(:clj (satisfies? clojure.lang.IDeref %))
                           #?(:cljs (satisfies? cljs.core/IDeref %))))
 
@@ -98,8 +98,8 @@
 
 
 (s/def ::edit #(and
-                (satisfies? mult.protocols/Edit %)
-                (satisfies? mult.protocols/Release %)
+                (satisfies? Boimler.protocols/Edit %)
+                (satisfies? Boimler.protocols/Release %)
                 #?(:clj (satisfies? clojure.lang.IDeref %))
                 #?(:cljs (satisfies? cljs.core/IDeref %))))
 
@@ -126,8 +126,8 @@
 
 
 (s/def ::editor #(and
-                  (satisfies? mult.protocols/Editor %)
-                  (satisfies? mult.protocols/Release %)
+                  (satisfies? Boimler.protocols/Editor %)
+                  (satisfies? Boimler.protocols/Release %)
                   #?(:clj (satisfies? clojure.lang.IDeref %))
                   #?(:cljs (satisfies? cljs.core/IDeref %))))
 
@@ -141,17 +141,17 @@
 (s/def ::on-tab-closed ifn?)
 (s/def ::on-tab-message ifn?)
 
-(s/def ::text-editor #(satisfies? mult.protocols/TextEditor %))
+(s/def ::text-editor #(satisfies? Boimler.protocols/TextEditor %))
 
 (s/def ::range (s/tuple int? int? int? int?))
 
 (s/def ::tab #(and
-               (satisfies? mult.protocols/Tab %)
-               (satisfies? mult.protocols/Open %)
-               (satisfies? mult.protocols/Close %)
-               (satisfies? mult.protocols/Send %)
-               (satisfies? mult.protocols/Active? %)
-               (satisfies? mult.protocols/Release %)
+               (satisfies? Boimler.protocols/Tab %)
+               (satisfies? Boimler.protocols/Open %)
+               (satisfies? Boimler.protocols/Close %)
+               (satisfies? Boimler.protocols/Send %)
+               (satisfies? Boimler.protocols/Active? %)
+               (satisfies? Boimler.protocols/Release %)
                #?(:clj (satisfies? clojure.lang.IDeref %))
                #?(:cljs (satisfies? cljs.core/IDeref %))))
 

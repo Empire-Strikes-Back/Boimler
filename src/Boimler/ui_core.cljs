@@ -1,4 +1,4 @@
-(ns mult.ui.core
+(ns Boimler.ui-core
   (:require
    [clojure.core.async :as a :refer [chan go go-loop <! >!  take! put! offer! poll! alt! alts! close!
                                      pub sub unsub mult tap untap mix admix unmix pipe
@@ -51,12 +51,12 @@
    ["@ant-design/icons/SyncOutlined" :default AntIconSyncOutlined]
    ["@ant-design/icons/ReloadOutlined" :default AntIconReloadOutlined]
 
-   [mult.spec]))
+   [Boimler.spec]))
 
 (do (clojure.spec.alpha/check-asserts true))
 
-(s/def ::send| ::mult.spec/channel)
-(s/def ::recv| ::mult.spec/channel)
+(s/def ::send| ::Boimler.spec/channel)
+(s/def ::recv| ::Boimler.spec/channel)
 
 (s/def ::create-opts (s/keys :req [::send|
                                    ::recv|]
@@ -68,7 +68,7 @@
 
 (defonce matchA (r/atom nil))
 (defonce stateA (r/atom
-                    ^{:type ::mult.spec/ui-state}
+                    ^{:type ::Boimler.spec/ui-state}
                     {}))
 
 (defn create
@@ -97,16 +97,16 @@
 
                 ::foo
                 (let []
-                  (send-data send| {:op ::mult.spec/op-ping})))
+                  (send-data send| {:op ::Boimler.spec/op-ping})))
 
               recv|
               (condp = (:op value)
 
-                ::mult.spec/op-ping
+                ::Boimler.spec/op-ping
                 (let []
                   (println ::ping value))
 
-                ::mult.spec/op-update-ui-state
+                ::Boimler.spec/op-update-ui-state
                 (let [{:keys []} value]
                   #_(println ::op-update-ui-state)
                   (swap! stateA merge value))))
@@ -114,7 +114,7 @@
 
 (defn send-data
   [send| data]
-  {:pre [(s/assert ::mult.spec/op (:op data))]}
+  {:pre [(s/assert ::Boimler.spec/op (:op data))]}
   (put! send| (pr-str data)))
 
 (defn home-page []
@@ -136,25 +136,25 @@
 
 (defn current-page [matchA]
   (r/with-let
-    [eval-valueA (r/cursor stateA [::mult.spec/eval-value])
-     eval-errA (r/cursor stateA [::mult.spec/eval-err])
-     eval-outA (r/cursor stateA [::mult.spec/eval-out])
-     configA (r/cursor stateA [::mult.spec/config])
-     ns-symbolA (r/cursor stateA [::mult.spec/ns-symbol])
-     active-nrepl-idA (r/cursor stateA [::mult.spec/nrepl-id])]
+    [eval-valueA (r/cursor stateA [::Boimler.spec/eval-value])
+     eval-errA (r/cursor stateA [::Boimler.spec/eval-err])
+     eval-outA (r/cursor stateA [::Boimler.spec/eval-out])
+     configA (r/cursor stateA [::Boimler.spec/config])
+     ns-symbolA (r/cursor stateA [::Boimler.spec/ns-symbol])
+     active-nrepl-idA (r/cursor stateA [::Boimler.spec/nrepl-id])]
     (let [active-nrepl-id @active-nrepl-idA
           config @configA]
       [:<>
        [:> AntRow]
        [:> AntRow
         [:span
-         (map (fn [{:keys [::mult.spec/nrepl-id] :as nrepl-meta}]
+         (map (fn [{:keys [::Boimler.spec/nrepl-id] :as nrepl-meta}]
                 (let [active? (= active-nrepl-id  nrepl-id)]
                   ^{:key nrepl-id}
                   [:span {:style {:cursor "pointer"
                                   :margin-right 8
                                   :color (if active? "black" "grey")}} (str nrepl-id)]))
-              (::mult.spec/nrepl-metas config))]]
+              (::Boimler.spec/nrepl-metas config))]]
        [:> AntRow
         [:div @ns-symbolA]]
 

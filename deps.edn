@@ -1,6 +1,4 @@
-{:paths ["src" "resources"]
- :mvn/repos {"central" {:url "https://repo1.maven.org/maven2/"}
-             "clojars" {:url "https://clojars.org/repo/"}}
+{:paths ["src"]
  :deps
  {}
 
@@ -14,35 +12,27 @@
    :override-deps {rewrite-clj/rewrite-clj {:git/url "https://github.com/clj-commons/rewrite-clj"
                                             :sha "db337b393ac527abe4015854d706ece2a9daeed2"
                                             :tag "v1.0.579-alpha"}
-                   sci/sci {:git/url "https://github.com//sci"
+                   sci/sci {:git/url "https://github.com/borkdude/sci"
                             :sha "05f2fe44445d9b21cb0b50d6bac455ca5eea90ec"
                             :tag "v0.2.4"}}}
 
-  :mult-vscode
+  :main
   {:extra-deps {cljfmt/cljfmt {:mvn/version "0.7.0"
                                :exclusions [rewrite-clj/rewrite-clj
                                             rewrite-cljs/rewrite-cljs]}
                 rewrite-clj/rewrite-clj {}
-                sci/sci {}
-                edit/edit {:local/root  "../../cljctools/edit"}
+                sci/sci {}}}
 
-                mult/mult {:local/root  "./mult"}
-                mult-vscode/mult-vscode {:local/root "./mult-vscode"}}}
-
-  :mult-ui-vscode
+  :ui-main
   {:extra-deps {reagent/reagent {:mvn/version "1.0.0-rc1" :exclusions [cljsjs/react cljsjs/react-dom]}
                 metosin/reitit {:mvn/version "0.5.12"}
                 metosin/reitit-spec {:mvn/version "0.5.12"}
                 metosin/reitit-frontend {:mvn/version "0.5.12"}
                 ;; Just for pretty printting the match
-                fipp {:mvn/version "0.6.23"}
-
-                mult/mult {:local/root  "./mult"}
-                mult-ui/mult-ui {:local/root  "./mult-ui"}
-                mult-ui-vscode/mult-ui-vscode {:local/root "./mult-ui-vscode"}}}
+                fipp {:mvn/version "0.6.23"}}}
 
   :shadow-cljs
-  {:extra-deps {shadow-cljs/shadow-cljs {:mvn/version "2.11.7"}
+  {:extra-deps {thheller/shadow-cljs {:mvn/version "2.11.7"}
                 nrepl/nrepl {:mvn/version "0.8.3"}
                 cider/cider-nrepl {:mvn/version "0.25.5"}
                 cider/piggieback {:mvn/version "0.5.2"}}}}}

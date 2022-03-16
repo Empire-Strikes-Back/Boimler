@@ -1,6 +1,6 @@
 {:optimizations :simple
- :output-to "resources/out/mult/main.js"
+ :output-to "out/main.js"
  :target :nodejs
- :main mult.runtime.main
+ :main Boimler.main
  :verbose true
  :output-dir "out"}

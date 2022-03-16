@@ -1,4 +1,4 @@
-(ns mult.runtime.nrepl
+(ns Boimler.nrepl
   (:require
    [clojure.core.async :as a :refer [chan go go-loop <! >! take! put! offer! poll! alt! alts! close!
                                      pub sub unsub mult tap untap mix admix unmix pipe
@@ -11,8 +11,8 @@
    [goog.string :refer [format]]
    [clojure.spec.alpha :as s]
 
-   [mult.protocols]
-   [mult.spec]))
+   [Boimler.protocols]
+   [Boimler.spec]))
 
 (def fs (js/require "fs"))
 (def path (js/require "path"))
@@ -22,13 +22,13 @@
 
 (defn create-nrepl-connection
   [{:as opts
-    :keys [::mult.spec/host
-           ::mult.spec/port
-           ::mult.spec/nrepl-type
-           ::mult.spec/shadow-build-key
-           ::mult.spec/runtime]}]
-  {:pre [(s/assert ::mult.spec/create-nrepl-connection-opts opts)]
-   :post [(s/assert ::mult.spec/nrepl-connection %)]}
+    :keys [::Boimler.spec/host
+           ::Boimler.spec/port
+           ::Boimler.spec/nrepl-type
+           ::Boimler.spec/shadow-build-key
+           ::Boimler.spec/runtime]}]
+  {:pre [(s/assert ::Boimler.spec/create-nrepl-connection-opts opts)]
+   :post [(s/assert ::Boimler.spec/nrepl-connection %)]}
   (let [stateA (atom nil)
 
         reponses->map
@@ -57,12 +57,12 @@
         eval-fn
         (fn eval-fn
           [{:as opts
-            :keys [::mult.spec/session-id
-                   ::mult.spec/ns-symbol
-                   ::mult.spec/code-string]}]
+            :keys [::Boimler.spec/session-id
+                   ::Boimler.spec/ns-symbol
+                   ::Boimler.spec/code-string]}]
           (let [nrepl-client (get @stateA ::nrepl-client)
                 result| (chan 1)]
-            (let [session-id (or session-id (get @stateA ::mult.spec/session-id))]
+            (let [session-id (or session-id (get @stateA ::Boimler.spec/session-id))]
               (.eval nrepl-client code-string (str ns-symbol) session-id
                      (fn [err responses]
                        (if err
@@ -73,10 +73,10 @@
         clone-fn
         (fn clone-fn
           [{:as opts
-            :keys [::mult.spec/session-id]}]
+            :keys [::Boimler.spec/session-id]}]
           (let [nrepl-client (get @stateA ::nrepl-client)
                 result| (chan 1)]
-            (let [session-id (or session-id (get @stateA ::mult.spec/session-id))]
+            (let [session-id (or session-id (get @stateA ::Boimler.spec/session-id))]
               (.clone nrepl-client session-id
                       (fn [err responses]
                         (if err
@@ -91,7 +91,7 @@
           [nrepl-connection]
           (go
             (let [{:keys [:new-session]} (<! (clone-fn {}))]
-              (swap! stateA assoc ::mult.spec/session-id new-session)
+              (swap! stateA assoc ::Boimler.spec/session-id new-session)
               new-session)))
 
         init-fns {[:nrepl :clj]
@@ -104,14 +104,14 @@
                   (fn init-fn
                     [nrepl-connection]
                     (go
-                      (let [{:keys [::mult.spec/session-id
-                                    ::mult.spec/shadow-build-key]} @nrepl-connection
+                      (let [{:keys [::Boimler.spec/session-id
+                                    ::Boimler.spec/shadow-build-key]} @nrepl-connection
                             code-string (format
                                          "(shadow.cljs.devtools.api/nrepl-select %s)"
                                          shadow-build-key)]
                         (<! (eval-fn
-                             {::mult.spec/code-string code-string
-                              ::mult.spec/session-id session-id}))
+                             {::Boimler.spec/code-string code-string
+                              ::Boimler.spec/session-id session-id}))
                         true)))
 
                   [:shadow-cljs :clj]
@@ -124,11 +124,11 @@
         (fn initialize
           [nrepl-connection]
           (if (and (connected?)
-                   (get @stateA ::mult.spec/session-id))
+                   (get @stateA ::Boimler.spec/session-id))
             (go true)
             (go
-              (let [{:keys [::mult.spec/nrepl-type
-                            ::mult.spec/runtime]} @stateA
+              (let [{:keys [::Boimler.spec/nrepl-type
+                            ::Boimler.spec/runtime]} @stateA
                     init-fn (get init-fns [nrepl-type runtime])]
                 (<! (init-session-fn nrepl-connection))
                 (<!  (init-fn nrepl-connection))
@@ -137,29 +137,29 @@
 
 
         nrepl-connection
-        ^{:type ::mult.spec/nrepl-connection}
+        ^{:type ::Boimler.spec/nrepl-connection}
         (reify
-          mult.protocols/NreplConnection
+          Boimler.protocols/NreplConnection
           (eval*
             [this {:as opts
-                   :keys [::mult.spec/session-id
-                          ::mult.spec/code-string]}]
-            {:pre [(s/assert ::mult.spec/eval-opts opts)]}
+                   :keys [::Boimler.spec/session-id
+                          ::Boimler.spec/code-string]}]
+            {:pre [(s/assert ::Boimler.spec/eval-opts opts)]}
             (go
                 ;; lazy connect on eval, making it http request/response like
                 ;; if user wants to eval and program is down, the response will be 'not connected'
                 ;; once the program is up, evals will work
                 ;; so no need for reconnecting socket, the request-lazy connect-response is better
-              (<! (mult.protocols/connect* this))
+              (<! (Boimler.protocols/connect* this))
               (<! (initialize this))
               (<! (eval-fn opts))))
 
           (clone*
             [this {:as opts
-                   :keys [::mult.spec/session-id]}]
-            {:pre [(s/assert ::mult.spec/clone-opts opts)]}
+                   :keys [::Boimler.spec/session-id]}]
+            {:pre [(s/assert ::Boimler.spec/clone-opts opts)]}
             (go
-              (<! (mult.protocols/connect* this))
+              (<! (Boimler.protocols/connect* this))
               (<! (clone-fn opts))))
 
           (connect*
@@ -170,40 +170,40 @@
                 (let [nrepl-client (.connect NreplClient
                                              (->
                                               (get @stateA ::opts)
-                                              (select-keys [::mult.spec/host
-                                                            ::mult.spec/port])
+                                              (select-keys [::Boimler.spec/host
+                                                            ::Boimler.spec/port])
                                               (clj->js)))]
                   (doto nrepl-client
                     (.on "ready" (fn []
                                    (put! result| true)))
                     (.on "close" (fn [code reason]
-                                   (mult.protocols/disconnect* this))))
+                                   (Boimler.protocols/disconnect* this))))
                   (swap! stateA assoc ::nrepl-client nrepl-client))
                 result|)))
 
           (connect*
-            [this {:keys [::mult.spec/host
-                          ::mult.spec/port] :as opts}]
-            {:pre [(s/assert ::mult.spec/connect-opts opts)]}
+            [this {:keys [::Boimler.spec/host
+                          ::Boimler.spec/port] :as opts}]
+            {:pre [(s/assert ::Boimler.spec/connect-opts opts)]}
             (swap! stateA merge opts {::opts opts})
-            (mult.protocols/connect* this))
+            (Boimler.protocols/connect* this))
 
           (disconnect*
             [this]
             (when-let [nrepl-client  (get @stateA ::nrepl-client)]
               (.end nrepl-client)
-              (swap! stateA dissoc ::nrepl-client ::mult.spec/session-id)))
+              (swap! stateA dissoc ::nrepl-client ::Boimler.spec/session-id)))
 
-          mult.protocols/Release
+          Boimler.protocols/Release
           (release*
             [this]
-            (mult.protocols/disconnect* this))
+            (Boimler.protocols/disconnect* this))
 
           cljs.core/IDeref
           (-deref [_] @stateA))]
     (reset! stateA (merge
                     opts
                     {::opts opts
-                     ::mult.spec/session-id nil
+                     ::Boimler.spec/session-id nil
                      ::nrepl-client nil}))
     nrepl-connection))

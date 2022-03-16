@@ -1,4 +1,4 @@
-(ns mult.ui.runtime.main
+(ns Boimler.ui-main
   (:require
    [clojure.core.async :as a :refer [chan go go-loop <! >!  take! put! offer! poll! alt! alts! close!
                                      pub sub unsub mult tap untap mix admix unmix pipe
@@ -13,7 +13,7 @@
    [cljs.reader :refer [read-string]]
    [clojure.spec.alpha :as s]
 
-   [mult.ui.core]))
+   [Boimler.ui-core]))
 
 (do (clojure.spec.alpha/check-asserts true))
 
@@ -27,9 +27,9 @@
   (println ::main)
   (let [recv| (chan 10)
         send| (chan 10)]
-    (mult.ui.core/create
-     {::mult.ui.core/recv| recv|
-      ::mult.ui.core/send| send|})
+    (Boimler.ui-core/create
+     {::Boimler.ui-core/recv| recv|
+      ::Boimler.ui-core/send| send|})
     (.addEventListener js/window "message"
                        (fn [ev]
                          (put! recv| (read-string ev.data))))

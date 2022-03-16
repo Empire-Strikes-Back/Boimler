@@ -1,0 +1,31 @@
+{:Boimler.spec/nrepl-metas
+ #{{:Boimler.spec/nrepl-id :main
+    :Boimler.spec/include-file?
+    (fn [filepath]
+      (re-matches (re-pattern ".+\\.clj(s|c)") filepath))
+    :Boimler.spec/host "localhost"
+    :Boimler.spec/port 8899
+    :Boimler.spec/nrepl-type :shadow-cljs
+    :Boimler.spec/runtime :cljs
+    :Boimler.spec/shadow-build-key :main}
+
+   {:Boimler.spec/nrepl-id :ui-main
+    :Boimler.spec/include-file?
+    (fn [filepath]
+      (re-matches (re-pattern ".+\\.clj(s|c)") filepath))
+    :Boimler.spec/host "localhost"
+    :Boimler.spec/port 8899
+    :Boimler.spec/nrepl-type :shadow-cljs
+    :Boimler.spec/runtime :cljs
+    :Boimler.spec/shadow-build-key :ui-main}
+
+   {:Boimler.spec/nrepl-id :shadow-devserver
+    :Boimler.spec/include-file?
+    (fn [filepath]
+      (re-matches (re-pattern ".+\\.clj(s|c)") filepath))
+    :Boimler.spec/host "localhost"
+    :Boimler.spec/port 8899
+    :Boimler.spec/nrepl-type :shadow-cljs
+    :Boimler.spec/runtime :clj}}
+
+ :Boimler.spec/open-n-tabs-on-start 0}

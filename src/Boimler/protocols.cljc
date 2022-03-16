@@ -1,10 +1,10 @@
-(ns mult.protocols)
+(ns Boimler.protocols)
 
 (defprotocol Release
   (release* [_]))
 
 
-(defprotocol MultProgram
+(defprotocol BoimlerProgram
   #_IDeref)
 
 (defprotocol LogicalRepl
@@ -36,7 +36,7 @@
   (show-notification* [_ text])
   (active-text-editor* [_])
   (create-tab* [_ opts])
-  (read-mult-edn* [_])
+  (read-Boimler-edn* [_])
   #_Release
   #_IDeref)
 

@@ -1,4 +1,4 @@
-(ns mult.runtime.edit
+(ns Boimler.edit
   (:require
    [clojure.core.async :as a :refer [chan go go-loop <! >! take! put! offer! poll! alt! alts! close!
                                      pub sub unsub mult tap untap mix admix unmix pipe
@@ -24,13 +24,8 @@
    [rewrite-clj.paredit]
    [cljfmt.core]
 
-   [cljctools.edit.spec :as edit.spec]
-   [cljctools.edit.core :as edit.core]
-   [cljctools.edit.scan :as edit.scan]
-   [cljctools.edit.string :as edit.string]
-
-   [mult.spec]
-   [mult.protocols]))
+   [Boimler.spec]
+   [Boimler.protocols]))
 
 (def fs (js/require "fs"))
 (def path (js/require "path"))
@@ -47,9 +42,9 @@
 (s/def ::context some?)
 
 (defn create
-  [context {:keys [::mult.spec/clj-string] :as opts}]
+  [context {:keys [::Boimler.spec/clj-string] :as opts}]
   {:pre [(s/assert ::create-opts opts)]
-   :post [(s/assert ::mult.spec/edit %)]}
+   :post [(s/assert ::Boimler.spec/edit %)]}
   (let [stateA (atom nil)
         ops| (chan 10)
         cmd| (chan 10)
@@ -66,10 +61,10 @@
             (swap! text-documentsA assoc text-document text-document-stateA)))
 
         edit
-        ^{:type ::mult.spec/edit}
+        ^{:type ::Boimler.spec/edit}
         (reify
-          mult.protocols/Edit
-          mult.protocols/Release
+          Boimler.protocols/Edit
+          Boimler.protocols/Release
           (release*
             [_]
             (close! ops|)
@@ -81,10 +76,10 @@
                     opts
                     {::opts opts
                      ::text-documentsA text-documentsA
-                     ::mult.spec/ops| ops|
-                     ::mult.spec/cmd| cmd|
-                     ::mult.spec/evt| evt|
-                     ::mult.spec/evt|mult evt|mult}))
+                     ::Boimler.spec/ops| ops|
+                     ::Boimler.spec/cmd| cmd|
+                     ::Boimler.spec/evt| evt|
+                     ::Boimler.spec/evt|mult evt|mult}))
 
     (register-formatter)
     (register-keypress context)
@@ -131,16 +126,16 @@
               cmd|
               (condp = (:op value)
 
-                ::mult.spec/cmd-format-current-form
+                ::Boimler.spec/cmd-format-current-form
                 (let []
                   (println ::cmd-format-current-form))
 
-                ::mult.spec/cmd-select-current-form
+                ::Boimler.spec/cmd-select-current-form
                 (when-let [text-editor (.. vscode -window -activeTextEditor)]
                   #_(let [text (.. text-editor -document (getText))
                           cursor (.. text-editor -selection -active)
                           cursor-position [(. cursor -line) (. cursor -character)]
-                          [string-left string-right] (edit.string/split-at-position text cursor-position)
+                          [string-left string-right] (Boimler.edit-string/split-at-position text cursor-position)
                           data (edit.scan/scan string-right [])]
                       (println data))
                   (when-not (get @text-documentsA (. text-editor -document))

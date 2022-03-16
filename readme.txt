@@ -1,4 +1,4 @@
-i am mult program - clojure(script) extension for vscode
+favourite place? computer, show us reactor room
 
 - my language is clojure
 - i consist of processes and queues - i do asynchrony with core.async library

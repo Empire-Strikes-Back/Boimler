@@ -1,4 +1,4 @@
-(ns mult.impl
+(ns Boimler.seed
   (:require
    [clojure.core.async :as a :refer [chan go go-loop <! >! take! put! offer! poll! alt! alts! close!
                                      pub sub unsub mult tap untap mix admix unmix pipe
@@ -12,15 +12,15 @@
    [clojure.spec.alpha :as s]
 
    [sci.core :as sci]
-   [cljctools.edit.core :as edit.core]
+   [Boimler.edit]
 
-   [mult.spec]
-   [mult.protocols]))
+   [Boimler.spec]
+   [Boimler.protocols]))
 
 (defn send-data
   [tab data]
-  {:pre [(s/assert ::mult.spec/mult-ops (:op data))]}
-  (mult.protocols/send* tab (pr-str data)))
+  {:pre [(s/assert ::Boimler.spec/mult-ops (:op data))]}
+  (Boimler.protocols/send* tab (pr-str data)))
 
 (defn filepath-to-nrepl-ids
   [config filepath]
@@ -28,9 +28,9 @@
         sci-ctx (sci/init opts)]
     (into []
           (comp
-           (filter (fn [{:keys [::mult.spec/nrepl-id
-                                ::mult.spec/include-file?]}]
+           (filter (fn [{:keys [::Boimler.spec/nrepl-id
+                                ::Boimler.spec/include-file?]}]
                      (let [include-file?-fn (sci/eval-string* sci-ctx (pr-str include-file?))]
                        (include-file?-fn filepath))))
-           (map ::mult.spec/nrepl-id))
-          (::mult.spec/nrepl-metas config))))
+           (map ::Boimler.spec/nrepl-id))
+          (::Boimler.spec/nrepl-metas config))))

@@ -1,15 +1,20 @@
 {
-	"name": "mult",
-	"description": "clojure/script extension",
+	"name": "Boimler",
+	"description": "back in what time?! we're the same age!",
 	"version": "0.0.0",
+  "publisher":"Boimler",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Empire-Strikes-Back/Boimler.git"
+  },
 	"engines": {
 		"vscode": "^1.30.0"
 	},
 	"activationEvents": [
 		"onLanguage:clojure",
-		"onCommand:mult.spec/cmd-open"
+		"onCommand:Boimler.spec/cmd-open"
 	],
-	"main": "./resources/out/mult-vscode/main.js",
+	"main": "./out/main.js",
 	"dependencies": {
 		"nrepl-client": "0.3.0"
 	},
@@ -24,47 +29,47 @@
 	"contributes": {
 		"commands": [
 			{
-				"command": "mult.spec/cmd-open",
-				"title": "Open mult"
+				"command": "Boimler.spec/cmd-open",
+				"title": "back in what time?! we're the same age!"
 			},
 			{
-				"command": "mult.spec/cmd-ping",
+				"command": "Boimler.spec/cmd-ping",
 				"title": "ping"
 			},
 			{
-				"command": "mult.spec/cmd-eval",
+				"command": "Boimler.spec/cmd-eval",
 				"title": "Eval current form"
 			},
 			{
-				"command": "mult.spec/cmd-format-current-form",
+				"command": "Boimler.spec/cmd-format-current-form",
 				"title": "Format current form"
 			},
 			{
-				"command": "mult.spec/cmd-select-current-form",
+				"command": "Boimler.spec/cmd-select-current-form",
 				"title": "Select current form"
 			}
 		],
 		"keybindings": [
 			{
-				"command": "mult.spec/cmd-open",
+				"command": "Boimler.spec/cmd-open",
 				"key": "ctrl+alt+m ctrl+alt+o"
 			},
 			{
-				"command": "mult.spec/cmd-ping",
+				"command": "Boimler.spec/cmd-ping",
 				"key": "ctrl+alt+m ctrl+alt+p"
 			},
 			{
-				"command": "mult.spec/cmd-eval",
+				"command": "Boimler.spec/cmd-eval",
 				"key": "alt+w",
 				"when": "editorTextFocus && editorLangId == 'clojure' && !editorReadOnly && !hasOtherSuggestions && !inSnippetMode && !suggestWidgetVisible"
 			},
 			{
-				"command": "mult.spec/cmd-format-current-form",
+				"command": "Boimler.spec/cmd-format-current-form",
 				"key": "ctrl+alt+m ctrl+alt+f",
 				"when": "editorTextFocus && editorLangId == 'clojure' && !editorReadOnly && !hasOtherSuggestions && !inSnippetMode && !suggestWidgetVisible"
 			},
 			{
-				"command": "mult.spec/cmd-select-current-form",
+				"command": "Boimler.spec/cmd-select-current-form",
 				"key": "ctrl+w",
 				"when": "editorTextFocus && editorLangId == 'clojure' && !editorReadOnly && !hasOtherSuggestions && !inSnippetMode && !suggestWidgetVisible"
 			}

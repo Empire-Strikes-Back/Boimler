@@ -1,7 +1,7 @@
 #!/bin/bash
 
 clean(){
-    rm -rf resources/public/js-out out .shadow-cljs .cpcache 
+    rm -rf out/js-out out .shadow-cljs .cpcache 
 }
 
 repl(){
@@ -9,25 +9,27 @@ repl(){
 }
 
 shadow(){
-    ./node_modules/.bin/shadow-cljs -A:core:shadow-cljs:mult-vscode:mult-ui-vscode "$@"
+    ./node_modules/.bin/shadow-cljs -A:core:shadow-cljs:main:ui-main "$@"
 }
 
 dev(){
-
     npm i
-    shadow watch :mult-vscode :mult-ui-vscode
+    shadow watch :main :ui-main
 
 }
 
 compile(){
     npm i
-    shadow compile :mult-vscode :mult-ui-vscode
+    shadow compile :main :ui-main
 }
 
 build(){
-    rm -rf resources/out
+    rm -rf out
     npm i
-    shadow release :mult-vscode :mult-ui-vscode
+    mkdir -p out
+    cp src/Boimler/index.html out
+    cp src/Boimler/style.css out
+    shadow release :main :ui-main
 }
 
 
@@ -36,8 +38,9 @@ cljs_compile(){
     #  clj -A:dev -m cljs.main -co cljs-build.edn -v -c # -r
 }
 
-vsix(){
-  npx vsce package
+release(){
+  rm -rf out/*.vsix
+  npx vsce package --out "out/Boimler-$(git rev-parse --short HEAD).vsix"
 }
 
 server(){
